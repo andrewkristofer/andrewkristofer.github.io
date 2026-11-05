@@ -1,0 +1,69 @@
+---
+import Window from '../Window.astro';
+import SectionHeader from '../SectionHeader.astro';
+
+const stats = [
+  { value: '3.46', label: 'GPA / 4.00', sub: 'Universitas Indonesia' },
+  { value: '87.96%', label: 'IDS accuracy', sub: 'Federated Learning thesis' },
+  { value: '5', label: 'pro credentials', sub: 'Oracle · Cisco · PMCP' },
+  { value: '3', label: 'months in prod', sub: 'PT Adaro Logistics' },
+];
+---
+
+<Window id="about" ws="2" title="about" path="~/andrew/about" size="lg">
+  <SectionHeader
+    index="01"
+    label="about"
+    title="Hardware-level thinking, human-facing software."
+  />
+
+  <div class="mt-10 grid gap-10 md:grid-cols-2">
+    <div class="space-y-5 text-base leading-relaxed text-slate-400">
+      <p>
+        I'm a Computer Engineering graduate from
+        <span class="text-slate-200">Universitas Indonesia</span>
+        with a foundation that spans the full stack of the discipline: data
+        science, IT security, web programming, and computer networks. My path
+        runs through the intersection of how systems actually work and how
+        people actually use them.
+      </p>
+      <p>
+        During my internship at
+        <span class="text-slate-200">PT Adaro Logistics</span> I worked on
+        enterprise-scale logistics web applications and SQL data pipelines,
+        optimizing queries, cutting system load times, and hunting root causes
+        of anomalies in production. That's where I learned real engineering is
+        <span class="text-slate-200">continuous improvement</span>: small,
+        measurable wins compounded across a system.
+      </p>
+      <p>
+        My undergraduate thesis pushed that mindset into research:
+        benchmarking ML algorithms on the CIC-IDS2017 dataset and designing a
+        federated learning intrusion detection system that reaches
+        <span class="text-celestial-cyan">87.96% accuracy</span>
+        without centralizing sensitive payloads. I care about
+        privacy-preserving architecture, cross-functional execution, and
+        shipping things that hold up under load.
+      </p>
+    </div>
+
+    <!-- stat tiles -->
+    <div class="grid grid-cols-2 gap-4">
+      {
+        stats.map((stat) => (
+          <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-white/20">
+            <div class="font-mono text-2xl font-semibold text-slate-100">
+              {stat.value}
+            </div>
+            <div class="mt-1 font-mono text-[11px] uppercase tracking-wider text-celestial-cyan">
+              {stat.label}
+            </div>
+            <div class="mt-2 text-xs leading-relaxed text-ink-faint">
+              {stat.sub}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Window>

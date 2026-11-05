@@ -1,0 +1,90 @@
+---
+/**
+ * GlassCard: Hyprland window-style card with a subtle glowing gradient border.
+ * Renders like a floating tiling-window: titlebar dots + mono kicker,
+ * glassmorphism body, optional mono tech tags.
+ * Pass `href` to turn the whole card into an external link (e.g. a GitHub
+ * repo): it renders as an <a target="_blank"> with a "view repo" footer.
+ */
+interface Props {
+  title?: string;
+  kicker?: string;
+  tags?: string[];
+  href?: string;
+  class?: string;
+}
+
+const { title, kicker, tags = [], href, class: className = '' } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const linkProps = href
+  ? {
+      href,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      'aria-label': title ? `${title} — GitHub repository` : 'Open GitHub repository',
+    }
+  : {};
+const destination = href ? href.replace(/^https?:\/\//, '') : '';
+---
+
+<Tag
+  {...linkProps}
+  class={`group relative flex rounded-2xl p-px bg-gradient-to-b from-white/[0.14] via-white/[0.06] to-white/[0.02] transition-all duration-300 hover:from-celestial-violet/50 hover:via-celestial-cyan/25 hover:to-transparent hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celestial-cyan/60 ${className}`}
+>
+  <div
+    class="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-celestial-panel/60 p-6 backdrop-blur-xl"
+  >
+    <!-- window titlebar -->
+    <div class="flex items-center gap-2">
+      <span class="h-2.5 w-2.5 rounded-full bg-[#f38ba8]/70 transition-colors group-hover:bg-[#f38ba8]"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-[#f9e2af]/70 transition-colors group-hover:bg-[#f9e2af]"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-[#a6e3a1]/70 transition-colors group-hover:bg-[#a6e3a1]"></span>
+      {
+        kicker && (
+          <span class="ml-2 truncate font-mono text-[11px] tracking-wider text-slate-500 transition-colors group-hover:text-slate-400">
+            {kicker}
+          </span>
+        )
+      }
+    </div>
+
+    {
+      title && (
+        <h3 class="mt-4 text-lg font-semibold tracking-tight text-slate-100">{title}</h3>
+      )
+    }
+
+    <div class="mt-2 text-sm leading-relaxed text-slate-400">
+      <slot />
+    </div>
+
+    {
+      (tags.length > 0 || href) && (
+        <div class="mt-auto pt-5">
+          {tags.length > 0 && (
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span class="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[11px] text-slate-300 transition-colors group-hover:border-white/15">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {href && (
+            <div
+              class={`flex items-center gap-2 font-mono text-[11px] ${tags.length > 0 ? 'mt-3.5' : ''}`}
+            >
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-celestial-cyan/30 bg-celestial-cyan/[0.08] px-2 py-0.5 text-celestial-cyan transition-colors group-hover:border-celestial-cyan/60 group-hover:bg-celestial-cyan/[0.15]"
+              >
+                <span aria-hidden="true">↗</span>
+                view repo
+              </span>
+              <span class="truncate text-ink-faint">{destination}</span>
+            </div>
+          )}
+        </div>
+      )
+    }
+  </div>
+</Tag>

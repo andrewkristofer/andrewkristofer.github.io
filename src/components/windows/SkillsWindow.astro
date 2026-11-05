@@ -1,0 +1,68 @@
+---
+import Window from '../Window.astro';
+import SectionHeader from '../SectionHeader.astro';
+
+const skillGroups = [
+  {
+    label: 'backend',
+    bar: 'border-l-celestial-violet',
+    dot: 'bg-celestial-violet',
+    items: ['PHP', 'Python', 'SQL', 'MySQL', 'PostgreSQL', 'Data Pipelines', 'Query Optimization'],
+  },
+  {
+    label: 'frontend',
+    bar: 'border-l-celestial-cyan',
+    dot: 'bg-celestial-cyan',
+    items: ['JavaScript', 'TypeScript', 'Next.js', 'HTML', 'CSS', 'Web Programming'],
+  },
+  {
+    label: 'ai / data',
+    bar: 'border-l-fuchsia-400',
+    dot: 'bg-fuchsia-400',
+    items: ['Machine Learning', 'Data Science', 'Federated Learning', 'CIC-IDS2017', 'Model Benchmarking', 'Data Analysis'],
+  },
+  {
+    label: 'infrastructure',
+    bar: 'border-l-emerald-400',
+    dot: 'bg-emerald-400',
+    items: ['Cisco Networking', 'IT Security', 'Threat Analysis', 'Privacy-Preserving Architecture', 'System Monitoring', 'Computer Networks'],
+  },
+];
+---
+
+<Window id="skills" ws="6" title="skills" path="~/andrew/skills" size="lg">
+  <SectionHeader
+    index="05"
+    label="skills"
+    title="The toolkit."
+    sub="Tiling-window status badges: the stacks I reach for, grouped by layer."
+  />
+
+  <div class="mt-10 grid gap-5 md:grid-cols-2">
+    {
+      skillGroups.map((group) => (
+        <div
+          class={`rounded-2xl border border-white/10 border-l-2 ${group.bar} bg-white/[0.03] p-6 backdrop-blur-xl transition-colors hover:bg-white/[0.05]`}
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="font-mono text-sm uppercase tracking-[0.25em] text-slate-200">
+              {group.label}
+            </h3>
+            <div class="flex gap-1.5">
+              <span class={`h-1.5 w-1.5 rounded-full ${group.dot}`} />
+              <span class="h-1.5 w-1.5 rounded-full bg-white/15" />
+            </div>
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2">
+            {group.items.map((item) => (
+              <span class="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-slate-300 transition-colors hover:border-white/20 hover:text-slate-100">
+                <span class={`h-1 w-1 rounded-full ${group.dot}`} />
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</Window>

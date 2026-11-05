@@ -1,0 +1,53 @@
+---
+import Window from '../Window.astro';
+import SectionHeader from '../SectionHeader.astro';
+import GlassCard from '../GlassCard.astro';
+---
+
+<Window id="experience" ws="3" title="experience" path="~/andrew/experience" size="lg">
+  <SectionHeader
+    index="02"
+    label="experience"
+    title="Enterprise systems under real load."
+    sub="Optimizing logistics pipelines and keeping production honest at PT Adaro Logistics."
+  />
+
+  <div class="mt-10 space-y-4">
+    <GlassCard
+      kicker="jul 2025 → oct 2025 · remote · tangerang, id"
+      title="Software Engineer (Intern) · PT Adaro Logistics"
+      tags={['PHP', 'JavaScript', 'SQL', 'Data Pipelines', 'System Monitoring']}
+      class="w-full"
+    >
+      <ul class="mt-3 space-y-3">
+        <li class="flex gap-3">
+          <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-celestial-violet">
+          </span>
+          <span>
+            Developed and optimized enterprise logistics web applications
+            using modern programming languages (PHP, JavaScript) and
+            relational SQL databases.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-celestial-cyan">
+          </span>
+          <span>
+            Streamlined backend data pipelines and database queries,
+            significantly reducing system load times and ensuring real-time
+            data accuracy for high-scale daily operations.
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-fuchsia-400">
+          </span>
+          <span>
+            Conducted continuous system monitoring and integrated
+            UI/backend troubleshooting, identifying root causes of anomalies
+            to maintain operational reliability.
+          </span>
+        </li>
+      </ul>
+    </GlassCard>
+  </div>
+</Window>

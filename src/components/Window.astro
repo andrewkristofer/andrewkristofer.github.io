@@ -1,0 +1,74 @@
+---
+/**
+ * Window: Hyprland-style floating window shell.
+ * Wraps a section as a centered glass "window" with a titlebar.
+ * Shown/hidden via the `data-open` attribute by the layout's window manager JS.
+ */
+interface Props {
+  id: string;
+  ws: string;
+  title: string;
+  path?: string;
+  size?: 'lg' | 'xl';
+}
+
+const { id, ws, title, path, size = 'lg' } = Astro.props;
+const sizeClass = size === 'xl' ? 'max-w-5xl' : 'max-w-4xl';
+---
+
+<div class="window" data-window={id}>
+  <div class="window-backdrop" data-window-close aria-hidden="true"></div>
+
+  <section
+    id={id}
+    role="dialog"
+    aria-modal="true"
+    aria-label={title}
+    tabindex="-1"
+    class={`window-panel ${sizeClass} overflow-hidden rounded-2xl border border-white/10 bg-celestial-panel/80 shadow-panel backdrop-blur-2xl`}
+  >
+    <!-- titlebar -->
+    <header
+      class="flex shrink-0 items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-2.5"
+    >
+      <div class="flex gap-1.5">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#f38ba8]/70"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#f9e2af]/70"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#a6e3a1]/70"></span>
+      </div>
+
+      <div class="flex min-w-0 items-center gap-2">
+        <span
+          class="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] text-ink-muted"
+        >
+          ws {ws}
+        </span>
+        <span class="truncate font-mono text-xs text-slate-300">{title}</span>
+        {
+          path && (
+            <span class="hidden truncate font-mono text-[10px] text-ink-faint sm:inline">
+              {path}
+            </span>
+          )
+        }
+      </div>
+
+      <div class="ml-auto flex shrink-0 items-center gap-2">
+        <kbd class="kbd hidden sm:inline-flex">Esc</kbd>
+        <button
+          type="button"
+          data-window-close
+          aria-label="Close window"
+          class="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-slate-400 transition-colors hover:border-red-400/40 hover:bg-red-400/10 hover:text-red-300"
+        >
+          ✕
+        </button>
+      </div>
+    </header>
+
+    <!-- scrollable content -->
+    <div class="window-body min-h-0 flex-1 p-6 md:p-8">
+      <slot />
+    </div>
+  </section>
+</div>

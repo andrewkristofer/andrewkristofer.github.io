@@ -1,0 +1,244 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/700.css';
+import '../styles/global.css';
+import WaybarNav from '../components/WaybarNav.astro';
+import KeybindingHUD from '../components/KeybindingHUD.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#090a10" />
+    <meta name="generator" content={Astro.generator} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="relative min-h-screen overflow-x-hidden bg-celestial-void font-sans text-ink">
+    <!-- aurora backdrop -->
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div
+        class="absolute -left-40 -top-40 h-[36rem] w-[36rem] animate-float rounded-full bg-celestial-violet/[0.14] blur-3xl"
+      >
+      </div>
+      <div
+        class="absolute -right-32 top-1/3 h-[32rem] w-[32rem] animate-drift rounded-full bg-celestial-cyan/[0.10] blur-3xl"
+      >
+      </div>
+      <div
+        class="absolute bottom-[-12rem] left-1/4 h-[30rem] w-[30rem] animate-float rounded-full bg-fuchsia-500/[0.08] blur-3xl"
+      >
+      </div>
+      <!-- star grid -->
+      <div
+        class="absolute inset-0 opacity-[0.35]"
+        style="background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 28px 28px;"
+      >
+      </div>
+    </div>
+    <!-- film grain -->
+    <div
+      class="pointer-events-none fixed inset-0 z-40 opacity-[0.035] mix-blend-overlay"
+      aria-hidden="true"
+      style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>');"
+    >
+    </div>
+
+    <WaybarNav />
+
+    <main class="relative z-10">
+      <slot />
+    </main>
+
+    <footer class="relative z-10 border-t border-white/5 px-6 pb-24 pt-10">
+      <div class="mx-auto flex max-w-5xl flex-col items-center gap-3 text-center">
+        <span class="font-mono text-[11px] tracking-wider text-ink-faint">
+          © 2026 Andrew Kristofer Jian · hand-crafted with
+          <span class="text-celestial-cyan">astro</span> +
+          <span class="text-celestial-violet">tailwind</span>
+        </span>
+        <span class="font-mono text-[10px] tracking-widest text-ink-faint/60">
+          ~/built-on-wayland-vibes
+        </span>
+      </div>
+    </footer>
+
+    <KeybindingHUD />
+
+    <script>
+      /*
+       * Hyprland-like window manager: vanilla JS, zero hydration.
+       * The home section is the "desktop"; every other section opens as a floating window.
+       *   ↓ / ↑      → open next / previous window (cycles)
+       *   Z + Q      → desktop: close all windows
+       *   Z + 1..5   → workspace jump, mirroring the Waybar pills:
+       *                1 about · 2 exp · 3 projects · 4 certs · 5 skills
+       *   Esc        → close the focused window
+       * Clicking a dock pill opens (or toggles) its window; clicking the dimmed
+       * backdrop or the ✕ button closes the focused one. Deep links like
+       * #projects open that window on load.
+       */
+      const SECTION_ORDER = [
+        'home',
+        'about',
+        'experience',
+        'projects',
+        'certifications',
+        'skills',
+      ];
+      const COMBO_TARGETS = {
+        'q': 'home',
+        '1': 'about',
+        '2': 'experience',
+        '3': 'projects',
+        '4': 'certifications',
+        '5': 'skills',
+      };
+
+      const windows = new Map();
+      document.querySelectorAll('[data-window]').forEach((el) => {
+        windows.set(el.getAttribute('data-window'), el);
+      });
+      const navLinks = Array.from(document.querySelectorAll('[data-nav-link]'));
+
+      let zHeld = false;
+      let openId = null;
+
+      function flashHud() {
+        const hud = document.getElementById('keybinding-hud');
+        if (!hud) return;
+        hud.classList.remove('hud-flash');
+        void hud.offsetWidth; // restart animation
+        hud.classList.add('hud-flash');
+      }
+
+      function setActive(id) {
+        navLinks.forEach((link) => {
+          link.setAttribute(
+            'data-active',
+            String(link.getAttribute('href') === `#${id}`),
+          );
+        });
+      }
+
+      function showDesktop(flash = true) {
+        windows.forEach((win) => win.removeAttribute('data-open'));
+        openId = null;
+        document.body.classList.remove('window-open');
+        setActive('home');
+        history.replaceState(null, '', '#home');
+        if (flash) flashHud();
+      }
+
+      function openWindow(id, flash = true) {
+        if (!id || id === 'home') {
+          showDesktop(flash);
+          return;
+        }
+        if (openId === id) {
+          showDesktop(flash); // toggle: re-opening the focused window closes it
+          return;
+        }
+        const win = windows.get(id);
+        if (!win) return;
+        windows.forEach((w) => w.removeAttribute('data-open'));
+        win.setAttribute('data-open', '');
+        openId = id;
+        document.body.classList.add('window-open');
+        setActive(id);
+        history.replaceState(null, '', `#${id}`);
+        if (flash) flashHud();
+        const panel = win.querySelector('.window-panel');
+        if (panel) panel.focus({ preventScroll: true });
+      }
+
+      function navigate(dir) {
+        const cur = Math.max(0, SECTION_ORDER.indexOf(openId ?? 'home'));
+        const next = (cur + dir + SECTION_ORDER.length) % SECTION_ORDER.length;
+        openWindow(SECTION_ORDER[next]);
+      }
+
+      function isTypingTarget(target) {
+        if (!(target instanceof Element)) return false;
+        return Boolean(
+          target.closest('input, textarea, select, [contenteditable="true"]'),
+        );
+      }
+
+      window.addEventListener('keydown', (e) => {
+        if (isTypingTarget(e.target) || e.ctrlKey || e.metaKey || e.altKey) return;
+
+        if (e.key === 'Escape') {
+          if (openId) showDesktop();
+          return;
+        }
+
+        if (e.key.toLowerCase() === 'z') {
+          zHeld = true;
+          return;
+        }
+
+        const comboKey = e.key.toLowerCase();
+        if (zHeld && COMBO_TARGETS[comboKey]) {
+          e.preventDefault();
+          openWindow(COMBO_TARGETS[comboKey]);
+          return;
+        }
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          navigate(1);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          navigate(-1);
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.key.toLowerCase() === 'z') zHeld = false;
+      });
+      window.addEventListener('blur', () => {
+        zHeld = false;
+      });
+
+      /* mouse: dock pills and in-page anchors open windows */
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const id = (link.getAttribute('href') || '').slice(1);
+          if (windows.has(id) || id === 'home') {
+            e.preventDefault();
+            openWindow(id);
+          }
+        });
+      });
+
+      /* mouse: close via ✕ button or the dimmed backdrop */
+      document.querySelectorAll('[data-window-close]').forEach((el) => {
+        el.addEventListener('click', () => showDesktop());
+      });
+
+      /* deep links: #about opens that window on load */
+      const initial = location.hash.slice(1);
+      if (initial && windows.has(initial)) {
+        openWindow(initial, false);
+      } else {
+        setActive('home');
+      }
+    </script>
+  </body>
+</html>

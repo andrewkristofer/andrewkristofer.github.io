@@ -1,0 +1,64 @@
+---
+/**
+ * WaybarNav: floating top dock / navbar.
+ * Waybar-style pill module with workspace indicators (1-5) that double
+ * as section anchors. Active state is toggled by the layout's window manager.
+ */
+const links = [
+  { id: 'about', ws: '1', label: 'about' },
+  { id: 'experience', ws: '2', label: 'exp' },
+  { id: 'projects', ws: '3', label: 'projects' },
+  { id: 'certifications', ws: '4', label: 'certs' },
+  { id: 'skills', ws: '5', label: 'skills' },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
+  <nav
+    class="flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 shadow-panel backdrop-blur-2xl"
+  >
+    <!-- logo / window title -->
+    <a
+      href="#home"
+      class="group flex shrink-0 items-center gap-2 rounded-full px-2 py-1 transition-colors hover:bg-white/[0.05]"
+    >
+      <span
+        class="h-2 w-2 rounded-full bg-gradient-to-br from-celestial-violet to-celestial-cyan shadow-glow-sm transition-transform group-hover:scale-125"
+      >
+      </span>
+      <span class="font-mono text-xs tracking-wider text-slate-200">
+        andrew<span class="text-celestial-cyan">.jian</span>
+      </span>
+    </a>
+
+    <!-- workspace pills -->
+    <div class="flex items-center gap-1 overflow-x-auto">
+      {
+        links.map((link) => (
+          <a
+            data-nav-link
+            href={`#${link.id}`}
+            class="group flex items-center gap-1.5 rounded-full border border-transparent px-2.5 py-1 font-mono text-[11px] text-slate-400 transition-all hover:border-white/10 hover:bg-white/[0.05] hover:text-slate-200 data-[active=true]:border-white/10 data-[active=true]:bg-white/[0.06] data-[active=true]:text-slate-100"
+          >
+            <span class="text-slate-500 transition-colors group-hover:text-celestial-violet data-[active=true]:text-celestial-violet">
+              {link.ws}
+            </span>
+            <span class="hidden sm:inline">{link.label}</span>
+            <span
+              class="h-1.5 w-1.5 rounded-full bg-white/15 transition-all group-hover:bg-celestial-violet/60 data-[active=true]:bg-emerald-400 data-[active=true]:shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+            />
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- status module -->
+    <a
+      href="#experience"
+      class="hidden shrink-0 items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 transition-colors hover:bg-emerald-400/[0.12] md:flex"
+    >
+      <span class="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-400"></span>
+      <span class="font-mono text-[11px] tracking-wide text-emerald-300">available</span>
+    </a>
+  </nav>
+</header>

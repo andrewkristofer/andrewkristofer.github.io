@@ -1,0 +1,157 @@
+\documentclass[a4paper,11pt]{article}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{left=1in, right=1in, top=0.75in, bottom=0.75in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{setspace}
+\usepackage{ragged2e}
+
+% --- FONTS ---
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- COLORS ---
+% Professional Corporate Blue untuk CV General
+\definecolor{corpblue}{RGB}{0, 75, 150}
+\definecolor{darkgray}{RGB}{70, 70, 70}
+\definecolor{lightgray}{RGB}{230, 230, 230}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=corpblue,
+    filecolor=corpblue,      
+    urlcolor=corpblue,
+}
+
+% --- SECTION FORMATTING ---
+\titleformat{\section}{\Large\bfseries\color{corpblue}}{}{0em}{}[\vspace{-0.5em}\rule{\textwidth}{1.5pt}]
+\titlespacing*{\section}{0pt}{1.8ex plus 1ex minus .2ex}{1.2ex plus .2ex}
+
+\begin{document}
+\pagestyle{empty} 
+\setstretch{1.12} 
+
+% ==========================================
+% HEADER SECTION 
+% ==========================================
+\noindent
+\begin{minipage}[c]{0.75\textwidth}
+    {\fontsize{26}{32}\selectfont \textbf{Andrew Kristofer Jian}} \\[0.3em]
+    {\Large \textcolor{corpblue}{\textbf{Computer Engineering Graduate}}} \\[0.8em]
+    \textcolor{darkgray}{
+        \faMapMarker \hspace{0.3em} Kabupaten Bekasi, West Java (Willing to Relocate) \\
+        \faPhone \hspace{0.3em} +62 878-8182-0317 \\
+        \faEnvelope \hspace{0.3em} \href{mailto:andrewjian4@gmail.com}{andrewjian4@gmail.com} \\
+        \faLinkedin \hspace{0.3em} \href{https://linkedin.com/in/andrewkristoferjian}{linkedin.com/in/andrewkristoferjian} \\
+        \faGithub \hspace{0.3em} \href{https://github.com/andrewkristofer}{github.com/andrewkristofer}
+    }
+\end{minipage}%
+\begin{minipage}[c]{0.25\textwidth}
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[corpblue, line width=2pt] (0,0) circle (1.85cm);
+            \clip (0,0) circle (1.8cm); 
+            \node at (0,0) {\includegraphics[width=4cm]{UserPhoto.jpeg}};
+        \end{tikzpicture}
+    \end{center}
+\end{minipage}
+
+\vspace{1.2em}
+
+% ==========================================
+% SUMMARY
+% ==========================================
+\section*{Profile Summary}
+\justifying
+Highly analytical Computer Engineering graduate from Universitas Indonesia with a comprehensive technical foundation in Data Science, IT Security, Web Programming, and Computer Networks. Proven track record in optimizing enterprise-scale operational pipelines and SQL databases during an internship at PT Adaro Logistics. Possesses a Project Management Certified Practitioner (PMCP) credential, demonstrating strong capabilities in cross-functional collaboration and task execution. Backed by global credentials from Oracle, Google, and Cisco, I am equipped with structured problem-solving skills and a strong research mindset, making me a highly qualified candidate ready to drive technological innovations in dynamic enterprise environments.
+
+\vspace{0.4em}
+
+% ==========================================
+% EDUCATION
+% ==========================================
+\section*{Education}
+\noindent
+\textbf{Universitas Indonesia} \hfill \textit{Depok, Indonesia}\\
+\textbf{Bachelor of Engineering in Computer Engineering} \hfill \textit{Aug 2022 -- Jul 2026}\\
+\textbf{Cumulative GPA: 3.46 / 4.00}
+
+\vspace{0.4em}
+
+% ==========================================
+% EXPERIENCE
+% ==========================================
+\section*{Professional Experience}
+\noindent
+\textbf{PT ADARO LOGISTICS} \hfill \textit{Remote}\\
+\textbf{Software Engineer (Intern)} \hfill \textit{Jul 2025 -- Oct 2025}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.25em]
+    \item \justifying Developed and optimized enterprise logistics web applications utilizing modern programming languages (including PHP and JavaScript) and relational databases (SQL).
+    \item \justifying Streamlined backend data pipelines and database queries, significantly reducing system load times and ensuring real-time data accuracy for high-scale daily operations.
+    \item \justifying Conducted extensive system monitoring and integrated UI/backend troubleshooting, effectively identifying root causes of anomalies to maintain operational reliability.
+\end{itemize}
+
+\vspace{0.4em}
+
+\newpage
+
+% ==========================================
+% ACADEMIC PROJECTS
+% ==========================================
+\section*{Academic \& Research Projects}
+\noindent
+\textbf{Federated Learning-Based Intrusion Detection System} \hfill \textit{Undergraduate Thesis}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.25em]
+    \item \justifying Evaluated and benchmarked multiple existing Machine Learning algorithms on the massive CIC-IDS2017 dataset, conducting in-depth comparative analysis to extract the architectural strengths of the top three performing models.
+    \item \justifying Synthesized these analytical insights to design and propose a novel, privacy-preserving Intrusion Detection System (IDS) utilizing Federated Learning, successfully identifying network threats with an 87.96\% accuracy rate without centralizing sensitive payload data.
+\end{itemize}
+
+\vspace{0.4em}
+% ==========================================
+% LICENSES & CERTIFICATIONS
+% ==========================================
+\section*{Licenses \& Professional Certifications}
+
+\noindent \textbf{\faNetworkWired \hspace{0.2em} Computer Architecture, Network \& IT Security}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.2em]
+    \item \textbf{Cisco CCNA Series (Introduction to Networks, Switching, Enterprise)} \textit{-- Cisco (Jul 2024)}
+    \item \textbf{Cybersecurity Specializations (Google Cloud, Microsoft, IBM, Cisco)} \textit{-- (Nov 2025)}
+\end{itemize}
+
+\vspace{0.2em}
+
+\noindent \textbf{\faBrain \hspace{0.2em} Data Science \& Database Management}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.2em]
+    \item \textbf{Oracle Cloud Infrastructure 2025 Certified Data Science \& Gen AI Pro} \textit{-- Oracle (Oct 2025)}
+    \item \textbf{Machine Learning with Python} \textit{-- Cognitive Class / IBM (Mar 2025)}
+\end{itemize}
+
+\vspace{0.2em}
+
+\noindent \textbf{\faTasks \hspace{0.2em} IT Project Management}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.2em]
+    \item \textbf{Project Management Certified Practitioner (PMCP)} \textit{-- PT Sinergi Daya Mitra (May 2026)}
+\end{itemize}
+
+\vspace{0.4em}
+
+% ==========================================
+% TECHNICAL & SOFT SKILLS
+% ==========================================
+\section*{Skills \& Competencies}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.35em]
+    \item \textbf{Web Programming \& Database:} PHP, SQL (MySQL/PostgreSQL), JavaScript/TypeScript, Python.
+    \item \textbf{IT Security \& Network:} Cisco Networking Protocols, Threat Analysis, Privacy-Preserving Architecture.
+    \item \textbf{Project Management \& Soft Skills:} IT Project Lifecycle, Analytical Thinking, Cross-functional Collaboration.
+\end{itemize}
+
+\end{document}
