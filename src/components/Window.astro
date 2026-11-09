@@ -4,6 +4,8 @@
  * Wraps a section as a centered glass "window" with a titlebar.
  * Shown/hidden via the `data-open` attribute by the layout's window manager JS.
  */
+import Tooltip from '@astroanimate/core/Tooltip';
+
 interface Props {
   id: string;
   ws: string;
@@ -55,14 +57,16 @@ const sizeClass = size === 'xl' ? 'max-w-5xl' : 'max-w-4xl';
 
       <div class="ml-auto flex shrink-0 items-center gap-2">
         <kbd class="kbd hidden sm:inline-flex">Esc</kbd>
-        <button
-          type="button"
-          data-window-close
-          aria-label="Close window"
-          class="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-slate-400 transition-colors hover:border-red-400/40 hover:bg-red-400/10 hover:text-red-300"
-        >
-          ✕
-        </button>
+        <Tooltip content="Close window · Esc" position="bottom" variant="fade">
+          <button
+            type="button"
+            data-window-close
+            aria-label="Close window"
+            class="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-xs text-slate-400 transition-colors hover:border-red-400/40 hover:bg-red-400/10 hover:text-red-300"
+          >
+            ✕
+          </button>
+        </Tooltip>
       </div>
     </header>
 

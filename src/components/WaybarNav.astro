@@ -4,6 +4,8 @@
  * Waybar-style pill module with workspace indicators (1-5) that double
  * as section anchors. Active state is toggled by the layout's window manager.
  */
+import Tooltip from '@astroanimate/core/Tooltip';
+
 const links = [
   { id: 'about', ws: '1', label: 'about' },
   { id: 'experience', ws: '2', label: 'exp' },
@@ -32,20 +34,25 @@ const links = [
     </a>
 
     <!-- workspace pills -->
-    <div class="flex items-center gap-1 overflow-x-auto">
+    <div class="relative flex items-center gap-1 overflow-x-auto">
+      <!-- #12 · sliding workspace indicator, moved by setActive() -->
+      <span
+        data-nav-indicator
+        class="pointer-events-none absolute inset-y-0 rounded-full border border-white/10 bg-white/[0.06] opacity-0 shadow-[0_0_10px_rgba(168,85,247,0.25)] transition-all duration-300 ease-out"
+      ></span>
       {
         links.map((link) => (
           <a
             data-nav-link
             href={`#${link.id}`}
-            class="group flex items-center gap-1.5 rounded-full border border-transparent px-2.5 py-1 font-mono text-[11px] text-slate-400 transition-all hover:border-white/10 hover:bg-white/[0.05] hover:text-slate-200 data-[active=true]:border-white/10 data-[active=true]:bg-white/[0.06] data-[active=true]:text-slate-100"
+            class="group relative flex items-center gap-1.5 rounded-full border border-transparent px-2.5 py-1 font-mono text-[11px] text-slate-400 transition-all hover:border-white/10 hover:bg-white/[0.05] hover:text-slate-200 data-[active=true]:text-slate-100"
           >
-            <span class="text-slate-500 transition-colors group-hover:text-celestial-violet data-[active=true]:text-celestial-violet">
+            <span class="text-slate-500 transition-colors group-hover:text-celestial-violet group-data-[active=true]:text-celestial-violet">
               {link.ws}
             </span>
             <span class="hidden sm:inline">{link.label}</span>
             <span
-              class="h-1.5 w-1.5 rounded-full bg-white/15 transition-all group-hover:bg-celestial-violet/60 data-[active=true]:bg-emerald-400 data-[active=true]:shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+              class="h-1.5 w-1.5 rounded-full bg-white/15 transition-all group-hover:bg-celestial-violet/60 group-data-[active=true]:bg-emerald-400 group-data-[active=true]:shadow-[0_0_8px_rgba(52,211,153,0.8)]"
             />
           </a>
         ))
@@ -53,12 +60,14 @@ const links = [
     </div>
 
     <!-- status module -->
-    <a
-      href="#experience"
-      class="hidden shrink-0 items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 transition-colors hover:bg-emerald-400/[0.12] md:flex"
-    >
-      <span class="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-400"></span>
-      <span class="font-mono text-[11px] tracking-wide text-emerald-300">available</span>
-    </a>
+    <Tooltip content="Open to opportunities" position="bottom" variant="spring" class="hidden! md:block!">
+      <a
+        href="#experience"
+        class="hidden shrink-0 items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 transition-colors hover:bg-emerald-400/[0.12] md:flex"
+      >
+        <span class="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-400"></span>
+        <span class="font-mono text-[11px] tracking-wide text-emerald-300">available</span>
+      </a>
+    </Tooltip>
   </nav>
 </header>

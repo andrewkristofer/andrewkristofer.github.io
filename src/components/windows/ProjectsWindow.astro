@@ -2,6 +2,7 @@
 import Window from '../Window.astro';
 import SectionHeader from '../SectionHeader.astro';
 import GlassCard from '../GlassCard.astro';
+import HighlightText from '@astroanimate/core/HighlightText';
 ---
 
 <Window id="projects" ws="4" title="projects" path="~/andrew/projects" size="xl">
@@ -28,7 +29,7 @@ import GlassCard from '../GlassCard.astro';
       </p>
       <p class="mt-3">
         Detects network threats at
-        <span class="font-mono text-celestial-cyan">87.96% accuracy</span>
+        <HighlightText trigger="hover" variant="underline" color="#06b6d4" className="font-mono text-celestial-cyan">87.96% accuracy</HighlightText>
         without ever centralizing sensitive payload data.
       </p>
     </GlassCard>

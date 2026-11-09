@@ -115,6 +115,17 @@ const { title, description } = Astro.props;
         windows.set(el.getAttribute('data-window'), el);
       });
       const navLinks = Array.from(document.querySelectorAll('[data-nav-link]'));
+      // #12 · sliding workspace indicator (WaybarNav)
+      const wsIndicator = document.querySelector('[data-nav-indicator]');
+      let activeNav = null;
+
+      // #17 · replay CSS entrance animations when a window opens
+      function restartAnimations(root) {
+        if (!root) return;
+        root.classList.add('anim-reset');
+        void root.getBoundingClientRect().width; // force reflow so the reset applies
+        root.classList.remove('anim-reset');
+      }
 
       let zHeld = false;
       let openId = null;
@@ -128,11 +139,35 @@ const { title, description } = Astro.props;
       }
 
       function setActive(id) {
+        activeNav = null;
         navLinks.forEach((link) => {
-          link.setAttribute(
-            'data-active',
-            String(link.getAttribute('href') === `#${id}`),
-          );
+          const isActive = link.getAttribute('href') === `#${id}`;
+          link.setAttribute('data-active', String(isActive));
+          if (isActive) activeNav = link;
+        });
+        moveWsIndicator();
+      }
+
+      // #12 · slide the workspace indicator under the active pill
+      function moveWsIndicator() {
+        if (!wsIndicator || !wsIndicator.parentElement) return;
+        if (!activeNav) {
+          wsIndicator.style.opacity = '0';
+          return;
+        }
+        const container = wsIndicator.parentElement;
+        const delta =
+          activeNav.getBoundingClientRect().left -
+          container.getBoundingClientRect().left;
+        wsIndicator.style.opacity = '1';
+        wsIndicator.style.width = `${activeNav.getBoundingClientRect().width}px`;
+        wsIndicator.style.transform = `translateX(${delta}px)`;
+      }
+
+      window.addEventListener('resize', moveWsIndicator);
+      if (wsIndicator && wsIndicator.parentElement) {
+        wsIndicator.parentElement.addEventListener('scroll', moveWsIndicator, {
+          passive: true,
         });
       }
 
@@ -158,6 +193,7 @@ const { title, description } = Astro.props;
         if (!win) return;
         windows.forEach((w) => w.removeAttribute('data-open'));
         win.setAttribute('data-open', '');
+        restartAnimations(win.querySelector('.window-panel'));
         openId = id;
         document.body.classList.add('window-open');
         setActive(id);

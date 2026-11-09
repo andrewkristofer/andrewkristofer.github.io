@@ -2,6 +2,7 @@
 import Window from '../Window.astro';
 import SectionHeader from '../SectionHeader.astro';
 import GlassCard from '../GlassCard.astro';
+import HighlightText from '@astroanimate/core/HighlightText';
 ---
 
 <Window id="experience" ws="3" title="experience" path="~/andrew/experience" size="lg">
@@ -43,7 +44,8 @@ import GlassCard from '../GlassCard.astro';
           </span>
           <span>
             Conducted continuous system monitoring and integrated
-            UI/backend troubleshooting, identifying root causes of anomalies
+            UI/backend troubleshooting, identifying
+            <HighlightText trigger="hover" variant="underline" color="#a855f7">root causes of anomalies</HighlightText>
             to maintain operational reliability.
           </span>
         </li>

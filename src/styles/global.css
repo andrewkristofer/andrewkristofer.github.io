@@ -148,6 +148,40 @@
   transform: translateY(0) scale(1);
 }
 
+/*
+ * ---- #17 · replay-on-window-open engine ----
+ * 1. While a window is closed, its panel skips its contents
+ *    (content-visibility: hidden), so IntersectionObserver-driven
+ *    components (AstroAnimate CountUp & friends) stay dormant and
+ *    fire exactly when the window opens. The delayed discrete flip
+ *    keeps the existing close fade-out intact (contents un-render
+ *    only after the 0.32s fade finishes).
+ * 2. .anim-reset is applied briefly by the window manager on open
+ *    so every CSS entrance animation inside the panel restarts
+ *    from 0% (the actual "replay").
+ */
+@supports (transition-behavior: allow-discrete) {
+  .window-panel {
+    transition:
+      opacity 0.28s ease,
+      transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+      content-visibility 0s allow-discrete;
+  }
+
+  .window:not([data-open]) .window-panel {
+    content-visibility: hidden;
+    transition:
+      opacity 0.28s ease,
+      transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+      content-visibility 0s linear 0.32s allow-discrete;
+  }
+}
+
+.anim-reset,
+.anim-reset * {
+  animation: none !important;
+}
+
 .window-body {
   overflow-y: auto;
   overscroll-behavior: contain;

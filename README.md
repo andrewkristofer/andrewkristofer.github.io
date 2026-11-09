@@ -9,7 +9,38 @@ for the keyboard-navigation layer.
 - [Astro](https://astro.build): static output, zero JS by default
 - [Tailwind CSS v4](https://tailwindcss.com) (`@tailwindcss/vite`) + `tailwind.config.mjs`
   (celestial colors, glows, fonts loaded via `@config`)
+- [AstroAnimate](https://www.astroanimate.com) (`@astroanimate/core`): CSS-first
+  animation components, zero-JS unless a component opts into `enhance`
 - Inter Variable + JetBrains Mono (bundled locally via Fontsource)
+
+## Animations (AstroAnimate)
+
+Motion comes from `@astroanimate/core` components — all respect
+`prefers-reduced-motion` and keep no-JS fallbacks.
+
+| Where | Component | Mode |
+| --- | --- | --- |
+| Hero boot sequence (staggered entrance) | `FadeInText` | CSS-only |
+| Rotating role line under the name | `TypewriterText` | `enhance` (tiny JS) |
+| Marker sweeps on key hero phrases | `HighlightText` `trigger="load"` | CSS-only |
+| Download CV shimmer | `AnimatedButton variant="shimmer"` | CSS-only |
+| Hover highlights through the content | `HighlightText` `trigger="hover"` | CSS-only |
+| About stat tiles (3.46 · 87.96% · 5 · 3) | `CountUp` | `enhance` (IntersectionObserver) |
+| Tooltips (dock chip, socials, ✕ button) | `Tooltip` | CSS-only |
+| Tech ticker at the bottom of the desktop | `InfiniteMarquee` | CSS-only |
+| Sliding workspace pill in the dock | custom (indicator + `setActive()`) | vanilla JS |
+
+**Window-open engine (`#17`)** — closed windows skip their panel contents
+(`content-visibility: hidden`, flipped with `transition-behavior:
+allow-discrete` after the close fade-out), so `IntersectionObserver`-driven
+components like `CountUp` stay dormant until a window actually opens and
+replay-friendly CSS entrances restart via the `.anim-reset` hook in the
+window manager (`BaseLayout.astro`).
+
+> **Note:** `@astroanimate/core` declares `peer astro@"^4 || ^5 || ^6"` while
+> this site runs Astro 7 — the components are plain CSS-first `.astro` files
+> and work fine; `.npmrc` sets `legacy-peer-deps=true` so `npm install` (and
+> CI) accept the stale peer range without flags.
 
 ## Commands
 

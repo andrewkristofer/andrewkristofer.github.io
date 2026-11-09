@@ -1,12 +1,17 @@
 ---
 import Window from '../Window.astro';
 import SectionHeader from '../SectionHeader.astro';
+import CountUp from '@astroanimate/core/CountUp';
+import HighlightText from '@astroanimate/core/HighlightText';
+import FadeInText from '@astroanimate/core/FadeInText';
 
+// #7 · tiles count up when the window opens — CountUp stays dormant while
+// closed thanks to the #17 content-visibility gate, then fires once on open.
 const stats = [
-  { value: '3.46', label: 'GPA / 4.00', sub: 'Universitas Indonesia' },
-  { value: '87.96%', label: 'IDS accuracy', sub: 'Federated Learning thesis' },
-  { value: '5', label: 'pro credentials', sub: 'Oracle · Cisco · PMCP' },
-  { value: '3', label: 'months in prod', sub: 'PT Adaro Logistics' },
+  { value: 3.46, decimals: 2, suffix: '', label: 'GPA / 4.00', sub: 'Universitas Indonesia' },
+  { value: 87.96, decimals: 2, suffix: '%', label: 'IDS accuracy', sub: 'Federated Learning thesis' },
+  { value: 5, decimals: 0, suffix: '', label: 'pro credentials', sub: 'Oracle · Cisco · PMCP' },
+  { value: 3, decimals: 0, suffix: '', label: 'months in prod', sub: 'PT Adaro Logistics' },
 ];
 ---
 
@@ -29,31 +34,45 @@ const stats = [
       </p>
       <p>
         During my internship at
-        <span class="text-slate-200">PT Adaro Logistics</span> I worked on
+        <HighlightText trigger="hover" variant="underline" color="#a855f7" className="text-slate-200">PT Adaro Logistics</HighlightText> I worked on
         enterprise-scale logistics web applications and SQL data pipelines,
         optimizing queries, cutting system load times, and hunting root causes
         of anomalies in production. That's where I learned real engineering is
-        <span class="text-slate-200">continuous improvement</span>: small,
+        <HighlightText trigger="hover" variant="underline" color="#a855f7" className="text-slate-200">continuous improvement</HighlightText>: small,
         measurable wins compounded across a system.
       </p>
       <p>
         My undergraduate thesis pushed that mindset into research:
         benchmarking ML algorithms on the CIC-IDS2017 dataset and designing a
         federated learning intrusion detection system that reaches
-        <span class="text-celestial-cyan">87.96% accuracy</span>
+        <HighlightText trigger="hover" variant="underline" color="#06b6d4" className="text-celestial-cyan">87.96% accuracy</HighlightText>
         without centralizing sensitive payloads. I care about
         privacy-preserving architecture, cross-functional execution, and
         shipping things that hold up under load.
       </p>
     </div>
 
-    <!-- stat tiles -->
+    <!-- stat tiles · #7 count up on open + #17 replay pop-in -->
     <div class="grid grid-cols-2 gap-4">
       {
-        stats.map((stat) => (
-          <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-white/20">
+        stats.map((stat, i) => (
+          <FadeInText
+            as="div"
+            duration={0.5}
+            delay={0.05 + i * 0.07}
+            yOffset={14}
+            blur="6px"
+            class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-white/20"
+          >
             <div class="font-mono text-2xl font-semibold text-slate-100">
-              {stat.value}
+              <CountUp
+                value={stat.value}
+                decimals={stat.decimals}
+                suffix={stat.suffix}
+                duration={1600}
+                mainClassName="text-2xl! font-semibold! font-mono! text-slate-100!"
+                enhance
+              />
             </div>
             <div class="mt-1 font-mono text-[11px] uppercase tracking-wider text-celestial-cyan">
               {stat.label}
@@ -61,7 +80,7 @@ const stats = [
             <div class="mt-2 text-xs leading-relaxed text-ink-faint">
               {stat.sub}
             </div>
-          </div>
+          </FadeInText>
         ))
       }
     </div>
