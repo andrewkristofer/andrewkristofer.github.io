@@ -1,10 +1,15 @@
 @import 'tailwindcss';
 @config '../../tailwind.config.mjs';
 
-/*
- * Nerd-font fallback: if the user has a Nerd Font installed locally
- * (the target audience of this aesthetic usually does), pick up the
- * 󰌌 glyph from it. Falls back to whatever the mono stack provides.
+/**
+ * @section Nerd Font Fallback
+ * @description Declares a local-only font stack so that, when the visitor has a
+ *              Nerd Font installed (the target audience of this aesthetic usually
+ *              does), the 󰌌 icon glyph is resolved from it. The `unicode-range`
+ *              restricts the face to the Private Use Area where Nerd Font glyphs
+ *              live, so it never interferes with regular text. If no local Nerd
+ *              Font is present, rendering falls back to the ambient mono stack.
+ * @see         https://www.nerdfonts.com
  */
 @font-face {
   font-family: 'Nerd Fallback';
@@ -29,7 +34,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Clear the floating Waybar dock when jumping to anchors */
+  /**
+   * Offset anchored sections so the floating Waybar dock does not obscure
+   * the target heading when navigating via in-page anchors.
+   */
   section[id] {
     scroll-margin-top: 7rem;
   }
@@ -57,7 +65,10 @@
 }
 
 @layer components {
-  /* Mechanical keyboard keycap */
+  /**
+   * @component .kbd
+   * @description Mechanical-keyboard keycap styling for keyboard shortcut hints.
+   */
   .kbd {
     @apply inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-md border border-white/10 bg-gradient-to-b from-white/[0.10] to-white/[0.02] px-1.5 font-mono text-[11px] leading-none text-slate-200;
     box-shadow:
@@ -65,13 +76,20 @@
       0 1px 2px rgba(0, 0, 0, 0.4);
   }
 
-  /* Gradient hairline used under section headers */
+  /**
+   * @component .hairline
+   * @description Gradient divider rule rendered beneath section headers.
+   */
   .hairline {
     @apply h-px flex-1 bg-gradient-to-r from-white/15 via-white/8 to-transparent;
   }
 }
 
-/* HUD flash when a hotkey fires */
+/**
+ * @section HUD Flash
+ * @description Brief glow pulse applied to the keybinding HUD whenever a hotkey
+ *              fires, giving immediate visual feedback for keyboard navigation.
+ */
 .hud-flash {
   animation: hud-flash 0.5s ease-out;
 }
@@ -97,7 +115,13 @@
   }
 }
 
-/* ---- floating windows (desktop metaphor) ---- */
+/* =============================================================================
+ * @section Floating Windows (Desktop Metaphor)
+ * @description Core styles for the tiling-window-manager layout: a fixed,
+ *              centred glass panel layered over a dimmed, blurred backdrop.
+ *              Visibility and open/closed state are driven by the `data-open`
+ *              attribute toggled by the layout's window-manager script.
+ * ========================================================================== */
 .window {
   position: fixed;
   inset: 0;
@@ -111,7 +135,7 @@
 .window:not([data-open]) {
   visibility: hidden;
   pointer-events: none;
-  /* keep the fade-out visible before hiding */
+  /* Delay the visibility switch so the panel's fade-out remains visible. */
   transition: visibility 0s linear 0.32s;
 }
 
@@ -148,17 +172,22 @@
   transform: translateY(0) scale(1);
 }
 
-/*
- * ---- #17 · replay-on-window-open engine ----
- * 1. While a window is closed, its panel skips its contents
- *    (content-visibility: hidden), so IntersectionObserver-driven
- *    components (AstroAnimate CountUp & friends) stay dormant and
- *    fire exactly when the window opens. The delayed discrete flip
- *    keeps the existing close fade-out intact (contents un-render
- *    only after the 0.32s fade finishes).
- * 2. .anim-reset is applied briefly by the window manager on open
- *    so every CSS entrance animation inside the panel restarts
- *    from 0% (the actual "replay").
+/**
+ * @section Replay-on-Window-Open Engine (#17)
+ * @description Restarts in-panel CSS entrance animations each time a window
+ *              opens. Two mechanisms cooperate:
+ *              1. While a window is closed its panel skips rendering its contents
+ *                 (`content-visibility: hidden`), so IntersectionObserver-driven
+ *                 components (AstroAnimate CountUp and friends) stay dormant and
+ *                 fire exactly when the window opens. The delayed discrete flip
+ *                 preserves the existing close fade-out (contents un-render only
+ *                 after the 0.32s fade completes).
+ *              2. `.anim-reset` is applied briefly by the window manager on open
+ *                 so every CSS entrance animation inside the panel restarts from
+ *                 0% (the actual "replay").
+ * @remarks     Guarded by `@supports (transition-behavior: allow-discrete)` so
+ *              browsers without discrete-transition support keep the plain
+ *              fade behaviour.
  */
 @supports (transition-behavior: allow-discrete) {
   .window-panel {

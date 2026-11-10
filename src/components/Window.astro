@@ -1,8 +1,16 @@
 ---
 /**
- * Window: Hyprland-style floating window shell.
- * Wraps a section as a centered glass "window" with a titlebar.
- * Shown/hidden via the `data-open` attribute by the layout's window manager JS.
+ * @component Window
+ * @description Hyprland-style floating window shell. Wraps a section as a
+ *              centred glass "window" with a titlebar (traffic-light dots, a
+ *              workspace badge, title, and a close button). Visibility is driven
+ *              by the `data-open` attribute, which the layout's window-manager
+ *              script toggles to show and hide the panel.
+ * @prop {string} id            - Unique section identifier; doubles as the window key and anchor target.
+ * @prop {string} ws            - Workspace number rendered in the titlebar badge.
+ * @prop {string} title         - Human-readable window title shown in the titlebar.
+ * @prop {string} [path]        - Optional filesystem-style path shown beside the title for the tiling-WM aesthetic.
+ * @prop {'lg'|'xl'} [size=lg]  - Max-width preset for the window panel.
  */
 import Tooltip from '@astroanimate/core/Tooltip';
 
@@ -29,7 +37,7 @@ const sizeClass = size === 'xl' ? 'max-w-5xl' : 'max-w-4xl';
     tabindex="-1"
     class={`window-panel ${sizeClass} overflow-hidden rounded-2xl border border-white/10 bg-celestial-panel/80 shadow-panel backdrop-blur-2xl`}
   >
-    <!-- titlebar -->
+    <!-- Window titlebar: traffic-light dots, workspace badge, title, and controls. -->
     <header
       class="flex shrink-0 items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-2.5"
     >
@@ -70,7 +78,7 @@ const sizeClass = size === 'xl' ? 'max-w-5xl' : 'max-w-4xl';
       </div>
     </header>
 
-    <!-- scrollable content -->
+    <!-- Scrollable content body; slotted child content renders here. -->
     <div class="window-body min-h-0 flex-1 p-6 md:p-8">
       <slot />
     </div>

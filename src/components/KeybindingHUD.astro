@@ -1,8 +1,12 @@
 ---
 /**
- * KeybindingHUD: floating bottom-right shortcut widget.
- * Titled glass box: "Keybindings:" header over mechanical-keycap <kbd> hints.
- * Flashes (`.hud-flash`) whenever a hotkey fires via the layout script.
+ * @component KeybindingHUD
+ * @description Floating bottom-right shortcut widget. A titled glass box that
+ *              lists "Keybindings:" over mechanical-keycap `<kbd>` hints for
+ *              navigation and workspace jumps. The HUD flashes (`.hud-flash`)
+ *              whenever a hotkey fires via the layout's window-manager script.
+ * @remarks     Rendered `pointer-events-none` and hidden on small viewports; it
+ *              is purely a visual affordance and never captures input.
  */
 const combos = [
   { keys: ['Z', 'Q'], label: 'home' },
@@ -21,7 +25,7 @@ const combos = [
   <div
     class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-panel backdrop-blur-2xl"
   >
-    <!-- title -->
+    <!-- HUD title bar with the keyboard icon and "Keybindings:" label. -->
     <div
       class="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-3 py-1.5"
     >
@@ -30,7 +34,7 @@ const combos = [
     </div>
 
     <div class="px-3 py-2.5">
-      <!-- navigation hints -->
+      <!-- Global navigation hints: arrow-key window cycling and Escape to close. -->
       <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
         <div class="flex items-center gap-1">
           <kbd class="kbd">↓</kbd>
@@ -43,7 +47,7 @@ const combos = [
         </div>
       </div>
 
-      <!-- workspace combos -->
+      <!-- Workspace jump combos: Z + <key> shortcuts mirroring the dock pills. -->
       <div
         class="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 border-t border-white/10 pt-2"
       >

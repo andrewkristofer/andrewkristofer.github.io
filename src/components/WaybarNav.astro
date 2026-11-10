@@ -1,8 +1,13 @@
 ---
 /**
- * WaybarNav: floating top dock / navbar.
- * Waybar-style pill module with workspace indicators (1-5) that double
- * as section anchors. Active state is toggled by the layout's window manager.
+ * @component WaybarNav
+ * @description Floating top dock / navbar in the Waybar style. Renders a
+ *              glassmorphic pill container with a logo, workspace-indicator
+ *              pills (1-5) that double as section anchors, and an "available"
+ *              status module. The active state is toggled by the layout's
+ *              window-manager script via `data-active` and the sliding indicator.
+ * @remarks     Workspace pills map to sections: 1 about · 2 exp · 3 projects ·
+ *              4 certs · 5 skills.
  */
 import Tooltip from '@astroanimate/core/Tooltip';
 
@@ -19,7 +24,7 @@ const links = [
   <nav
     class="flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 shadow-panel backdrop-blur-2xl"
   >
-    <!-- logo / window title -->
+    <!-- Logo / window-title link; clicking returns to the desktop (#home). -->
     <a
       href="#home"
       class="group flex shrink-0 items-center gap-2 rounded-full px-2 py-1 transition-colors hover:bg-white/[0.05]"
@@ -33,9 +38,9 @@ const links = [
       </span>
     </a>
 
-    <!-- workspace pills -->
+    <!-- Workspace pills (1-5); each doubles as a section anchor link. -->
     <div class="relative flex items-center gap-1 overflow-x-auto">
-      <!-- #12 · sliding workspace indicator, moved by setActive() -->
+      <!-- Sliding workspace indicator (spec #12); repositioned by setActive() in the layout script. -->
       <span
         data-nav-indicator
         class="pointer-events-none absolute inset-y-0 rounded-full border border-white/10 bg-white/[0.06] opacity-0 shadow-[0_0_10px_rgba(168,85,247,0.25)] transition-all duration-300 ease-out"
@@ -59,7 +64,7 @@ const links = [
       }
     </div>
 
-    <!-- status module -->
+    <!-- Status module: pulsing "available" badge linking to the experience window. -->
     <Tooltip content="Open to opportunities" position="bottom" variant="spring" class="hidden! md:block!">
       <a
         href="#experience"

@@ -1,7 +1,17 @@
 ---
+/**
+ * @component SkillsWindow
+ * @description "Skills" window: the technical toolkit grouped by layer
+ *              (backend, frontend, AI/data, infrastructure) and rendered as
+ *              bordered panels of mono skill badges.
+ */
 import Window from '../Window.astro';
 import SectionHeader from '../SectionHeader.astro';
 
+/**
+ * Skill groups rendered as layered panels. Each entry supplies a label, an
+ * accent bar/dot colour, and the list of skill strings shown as badges.
+ */
 const skillGroups = [
   {
     label: 'backend',

@@ -1,6 +1,13 @@
 ---
 /**
- * SectionHeader: Waybar pill kicker + heading + gradient hairline.
+ * @component SectionHeader
+ * @description Consistent section opener: a Waybar-style pill kicker (index +
+ *              label) followed by the main heading, a gradient hairline, and an
+ *              optional supporting paragraph.
+ * @prop {string} index - Zero-padded section index rendered in the pill (e.g. "01").
+ * @prop {string} label - Short section label rendered in the pill (e.g. "about").
+ * @prop {string} title - The main section heading.
+ * @prop {string} [sub] - Optional supporting sentence rendered beneath the heading.
  */
 interface Props {
   index: string;

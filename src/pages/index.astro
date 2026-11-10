@@ -1,4 +1,12 @@
 ---
+/**
+ * @file        index.astro
+ * @description Landing page for the Andrew Kristofer Jian portfolio. Renders the
+ *              hero "desktop" (status pill, name, typewriter roles, CTA buttons,
+ *              and tech ticker) and mounts the five tiling-window sections.
+ * @remarks     Windows are shown one at a time by the layout's window-manager
+ *              script; this page supplies their hero copy and content.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AboutWindow from '../components/windows/AboutWindow.astro';
 import ExperienceWindow from '../components/windows/ExperienceWindow.astro';
@@ -12,7 +20,9 @@ import AnimatedButton from '@astroanimate/core/AnimatedButton';
 import InfiniteMarquee from '@astroanimate/core/InfiniteMarquee';
 import Tooltip from '@astroanimate/core/Tooltip';
 
-// #2 · typewriter role phrases
+/**
+ * Role phrases cycled by the hero typewriter effect (spec #2).
+ */
 const roles = [
   'Computer Engineering Graduate',
   'Enterprise Systems Engineer',
@@ -20,7 +30,9 @@ const roles = [
   'Continuous Improver',
 ];
 
-// #15 · tech ticker
+/**
+ * Technology keywords streamed through the hero marquee ticker (spec #15).
+ */
 const ticker = [
   'PHP',
   'Python',
@@ -36,6 +48,10 @@ const ticker = [
   'IT Security',
 ];
 
+/**
+ * Social and contact links rendered as icon buttons in the hero CTA row. Each
+ * entry supplies a label, tooltip text, target URL, and an SVG path icon.
+ */
 const socials = [
   {
     label: 'GitHub',
@@ -62,10 +78,12 @@ const socials = [
   title="Andrew Kristofer Jian · Computer Engineering Graduate"
   description="Portfolio of Andrew Kristofer Jian, Computer Engineering graduate (Universitas Indonesia) specializing in enterprise systems, data pipelines, and privacy-preserving machine learning."
 >
-  <!-- ============ #home · the desktop ============ -->
+  <!-- ============================================================= -->
+  <!-- Section: #home — the desktop (hero)                            -->
+  <!-- ============================================================= -->
   <section id="home" class="relative flex min-h-screen items-center px-6 pb-24 pt-36">
     <div class="mx-auto w-full max-w-5xl">
-      <!-- status pill -->
+      <!-- Status pill: pulsing "Available for roles" badge. -->
       <FadeInText
         as="div"
         duration={0.55}
@@ -96,7 +114,7 @@ const socials = [
         </span>
       </FadeInText>
 
-      <!-- #2 · typewriter role line -->
+      <!-- Typewriter role line (spec #2): cycles through the role phrases. -->
       <FadeInText
         as="p"
         duration={0.55}
@@ -141,7 +159,7 @@ const socials = [
         research. Computer engineering with a continuous-improvement mindset.
       </FadeInText>
 
-      <!-- CTAs -->
+      <!-- Primary CTAs: CV download button plus social/contact icon links. -->
       <FadeInText
         as="div"
         duration={0.6}
@@ -150,7 +168,7 @@ const socials = [
         blur="8px"
         class="mt-10 flex flex-wrap items-center gap-3"
       >
-        <!-- #5 · shimmer CTA (AnimatedButton) -->
+        <!-- Shimmer CTA (spec #5): animated CV download button. -->
         <AnimatedButton
           variant="shimmer"
           href="/andrew-kristofer-jian-cv.pdf"
@@ -184,7 +202,7 @@ const socials = [
         }
       </FadeInText>
 
-      <!-- launch hint -->
+      <!-- Launch hint: keyboard prompt for opening windows from the dock. -->
       <FadeInText
         as="div"
         duration={0.6}
@@ -200,7 +218,7 @@ const socials = [
       </FadeInText>
     </div>
 
-    <!-- #15 · tech ticker -->
+    <!-- Tech ticker (spec #15): infinite marquee of technology keywords. -->
     <FadeInText
       as="div"
       duration={0.8}
@@ -220,7 +238,9 @@ const socials = [
     </FadeInText>
   </section>
 
-  <!-- ============ windows · one at a time ============ -->
+  <!-- ============================================================= -->
+  <!-- Windows: the five tiling-window sections, shown one at a time  -->
+  <!-- ============================================================= -->
   <AboutWindow />
   <ExperienceWindow />
   <ProjectsWindow />

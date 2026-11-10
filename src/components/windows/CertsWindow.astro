@@ -1,7 +1,18 @@
 ---
+/**
+ * @component CertsWindow
+ * @description "Certifications" window: professional credentials grouped by
+ *              category (network & security, data science & Gen AI, project
+ *              management) and rendered as pill-shaped badges.
+ */
 import Window from '../Window.astro';
 import SectionHeader from '../SectionHeader.astro';
 
+/**
+ * Certification groups rendered as titled sections. Each item carries its
+ * display name, a detail line, issuing body/date metadata, and a dot colour
+ * class for the status indicator.
+ */
 const certGroups = [
   {
     label: 'network & security',

@@ -1,10 +1,18 @@
 ---
 /**
- * GlassCard: Hyprland window-style card with a subtle glowing gradient border.
- * Renders like a floating tiling-window: titlebar dots + mono kicker,
- * glassmorphism body, optional mono tech tags.
- * Pass `href` to turn the whole card into an external link (e.g. a GitHub
- * repo): it renders as an <a target="_blank"> with a "view repo" footer.
+ * @component GlassCard
+ * @description Hyprland window-style card with a subtle glowing gradient border.
+ *              Renders like a floating tiling-window: titlebar traffic-light dots
+ *              plus a mono kicker, a glassmorphism body, and optional mono tech
+ *              tags in the footer.
+ * @remarks     Pass `href` to turn the whole card into an external link (e.g. a
+ *              GitHub repo). It then renders as an `<a target="_blank">` with a
+ *              "view repo" footer showing the stripped destination host.
+ * @prop {string}  [title]  - Optional card heading.
+ * @prop {string}  [kicker] - Optional small mono label above the title (e.g. date range).
+ * @prop {string[]} [tags]  - Optional list of technology tags rendered as pills.
+ * @prop {string}  [href]   - Optional external URL; converts the card into a link.
+ * @prop {string}  [class]  - Additional CSS classes merged onto the card root.
  */
 interface Props {
   title?: string;
@@ -34,7 +42,7 @@ const destination = href ? href.replace(/^https?:\/\//, '') : '';
   <div
     class="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-celestial-panel/60 p-6 backdrop-blur-xl"
   >
-    <!-- window titlebar -->
+    <!-- Window titlebar: traffic-light dots plus an optional mono kicker. -->
     <div class="flex items-center gap-2">
       <span class="h-2.5 w-2.5 rounded-full bg-[#f38ba8]/70 transition-colors group-hover:bg-[#f38ba8]"></span>
       <span class="h-2.5 w-2.5 rounded-full bg-[#f9e2af]/70 transition-colors group-hover:bg-[#f9e2af]"></span>

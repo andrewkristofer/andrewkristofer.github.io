@@ -30,7 +30,7 @@ const { title, description } = Astro.props;
     <title>{title}</title>
   </head>
   <body class="relative min-h-screen overflow-x-hidden bg-celestial-void font-sans text-ink">
-    <!-- aurora backdrop -->
+    <!-- Aurora backdrop: three blurred, drifting colour blobs (decorative, non-interactive). -->
     <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
       <div
         class="absolute -left-40 -top-40 h-[36rem] w-[36rem] animate-float rounded-full bg-celestial-violet/[0.14] blur-3xl"
@@ -44,14 +44,14 @@ const { title, description } = Astro.props;
         class="absolute bottom-[-12rem] left-1/4 h-[30rem] w-[30rem] animate-float rounded-full bg-fuchsia-500/[0.08] blur-3xl"
       >
       </div>
-      <!-- star grid -->
+      <!-- Star grid: faint dotted radial-gradient overlay adding depth. -->
       <div
         class="absolute inset-0 opacity-[0.35]"
         style="background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 28px 28px;"
       >
       </div>
     </div>
-    <!-- film grain -->
+    <!-- Film grain: SVG fractal-noise overlay for a subtle textured finish. -->
     <div
       class="pointer-events-none fixed inset-0 z-40 opacity-[0.035] mix-blend-overlay"
       aria-hidden="true"
@@ -81,17 +81,26 @@ const { title, description } = Astro.props;
     <KeybindingHUD />
 
     <script>
-      /*
-       * Hyprland-like window manager: vanilla JS, zero hydration.
-       * The home section is the "desktop"; every other section opens as a floating window.
-       *   ↓ / ↑      → open next / previous window (cycles)
-       *   Z + Q      → desktop: close all windows
-       *   Z + 1..5   → workspace jump, mirroring the Waybar pills:
-       *                1 about · 2 exp · 3 projects · 4 certs · 5 skills
-       *   Esc        → close the focused window
-       * Clicking a dock pill opens (or toggles) its window; clicking the dimmed
-       * backdrop or the ✕ button closes the focused one. Deep links like
-       * #projects open that window on load.
+      /**
+       * @file        Window-manager script (inline, vanilla JS — zero hydration).
+       * @description Implements a Hyprland-like window manager for the single-page
+       *              layout. The "home" section is the desktop; every other section
+       *              opens as a centred floating window. Windows are opened, closed,
+       *              and cycled through keyboard shortcuts, dock-pill clicks, and deep
+       *              links, while CSS entrance animations replay on each open.
+       * @keybindings
+       *   ↓ / ↑     → open next / previous window (cycles)
+       *   Z + Q     → desktop: close all windows
+       *   Z + 1..5  → workspace jump, mirroring the Waybar pills:
+       *               1 about · 2 exp · 3 projects · 4 certs · 5 skills
+       *   Esc       → close the focused window
+       * @remarks    Clicking a dock pill opens (or toggles) its window; clicking the
+       *             dimmed backdrop or the ✕ button closes the focused one. Deep
+       *             links such as #projects open that window on load.
+       */
+      /**
+       * Canonical section order used for arrow-key cycling (↓ next / ↑ previous).
+       * The 'home' entry represents the desktop and serves as the cycle anchor.
        */
       const SECTION_ORDER = [
         'home',
@@ -101,6 +110,10 @@ const { title, description } = Astro.props;
         'certifications',
         'skills',
       ];
+      /**
+       * Maps the "Z + <key>" workspace-jump combos to their target section ids,
+       * mirroring the Waybar dock pills (q → desktop, 1-5 → windows).
+       */
       const COMBO_TARGETS = {
         'q': 'home',
         '1': 'about',
@@ -110,34 +123,60 @@ const { title, description } = Astro.props;
         '5': 'skills',
       };
 
+      /** Registry of window elements keyed by their `data-window` id. */
       const windows = new Map();
       document.querySelectorAll('[data-window]').forEach((el) => {
         windows.set(el.getAttribute('data-window'), el);
       });
+      /** Dock-pill anchor links whose active state tracks the focused window. */
       const navLinks = Array.from(document.querySelectorAll('[data-nav-link]'));
-      // #12 · sliding workspace indicator (WaybarNav)
+      /** Sliding workspace indicator (spec #12); repositioned by `setActive()`. */
       const wsIndicator = document.querySelector('[data-nav-indicator]');
+      /** Nav link currently marked active, or `null` while on the desktop. */
       let activeNav = null;
 
-      // #17 · replay CSS entrance animations when a window opens
+      /**
+       * Replay CSS entrance animations under `root` (spec #17) by briefly applying
+       * the `.anim-reset` class, forcing a reflow, then removing it so animations
+       * restart from 0%.
+       *
+       * @param {Element|null|undefined} root - Container whose animations should restart.
+       * @returns {void}
+       */
       function restartAnimations(root) {
         if (!root) return;
         root.classList.add('anim-reset');
-        void root.getBoundingClientRect().width; // force reflow so the reset applies
+        // Force a reflow so the .anim-reset styles apply before removal.
+        void root.getBoundingClientRect().width;
         root.classList.remove('anim-reset');
       }
 
+      /** Whether the "Z" modifier key is currently held for workspace combos. */
       let zHeld = false;
+      /** Id of the currently open window, or `null` while on the desktop. */
       let openId = null;
 
+      /**
+       * Trigger the keybinding HUD flash to acknowledge a hotkey press.
+       *
+       * @returns {void}
+       */
       function flashHud() {
         const hud = document.getElementById('keybinding-hud');
         if (!hud) return;
         hud.classList.remove('hud-flash');
-        void hud.offsetWidth; // restart animation
+        // Force a reflow so the flash animation restarts cleanly.
+        void hud.offsetWidth;
         hud.classList.add('hud-flash');
       }
 
+      /**
+       * Mark the dock pill matching `id` as active and realign the sliding
+       * workspace indicator.
+       *
+       * @param {string} id - Section id to highlight (e.g. "about"); non-matching pills are cleared.
+       * @returns {void}
+       */
       function setActive(id) {
         activeNav = null;
         navLinks.forEach((link) => {
@@ -148,7 +187,12 @@ const { title, description } = Astro.props;
         moveWsIndicator();
       }
 
-      // #12 · slide the workspace indicator under the active pill
+      /**
+       * Slide the workspace indicator (spec #12) beneath the active pill, or hide
+       * it when no pill is active (i.e. while on the desktop).
+       *
+       * @returns {void}
+       */
       function moveWsIndicator() {
         if (!wsIndicator || !wsIndicator.parentElement) return;
         if (!activeNav) {
@@ -171,6 +215,12 @@ const { title, description } = Astro.props;
         });
       }
 
+      /**
+       * Close any open window and return to the desktop ("home").
+       *
+       * @param {boolean} [flash=true] - Whether to flash the keybinding HUD to acknowledge the action.
+       * @returns {void}
+       */
       function showDesktop(flash = true) {
         windows.forEach((win) => win.removeAttribute('data-open'));
         openId = null;
@@ -180,13 +230,23 @@ const { title, description } = Astro.props;
         if (flash) flashHud();
       }
 
+      /**
+       * Open the window registered under `id`, closing any other open window and
+       * replaying its entrance animations. Re-opening the currently focused window
+       * toggles it closed.
+       *
+       * @param {string|null} id      - Target window id; `null` or "home" returns to the desktop.
+       * @param {boolean}     [flash=true] - Whether to flash the keybinding HUD to acknowledge the action.
+       * @returns {void}
+       */
       function openWindow(id, flash = true) {
         if (!id || id === 'home') {
           showDesktop(flash);
           return;
         }
         if (openId === id) {
-          showDesktop(flash); // toggle: re-opening the focused window closes it
+          // Toggle: re-opening the focused window closes it.
+          showDesktop(flash);
           return;
         }
         const win = windows.get(id);
@@ -203,12 +263,26 @@ const { title, description } = Astro.props;
         if (panel) panel.focus({ preventScroll: true });
       }
 
+      /**
+       * Cycle to the next (`dir` = 1) or previous (`dir` = -1) window in
+       * `SECTION_ORDER`, wrapping around at the ends of the list.
+       *
+       * @param {number} dir - Direction to move: +1 forward, -1 backward.
+       * @returns {void}
+       */
       function navigate(dir) {
         const cur = Math.max(0, SECTION_ORDER.indexOf(openId ?? 'home'));
         const next = (cur + dir + SECTION_ORDER.length) % SECTION_ORDER.length;
         openWindow(SECTION_ORDER[next]);
       }
 
+      /**
+       * Determine whether a keyboard event target is a text-entry element, so
+       * global hotkeys never interfere with typing.
+       *
+       * @param {EventTarget|null} target - The event target to inspect.
+       * @returns {boolean} `true` when the target is an input, textarea, select, or contenteditable element.
+       */
       function isTypingTarget(target) {
         if (!(target instanceof Element)) return false;
         return Boolean(
@@ -216,6 +290,12 @@ const { title, description } = Astro.props;
         );
       }
 
+      /**
+       * Global keydown handler implementing the window-manager keyboard controls:
+       * Escape closes the focused window, "Z" arms workspace combos, "Z + <key>"
+       * jumps to a window, and ↑/↓ cycle through windows. Text-entry targets and
+       * modifier chords (Ctrl/Meta/Alt) are ignored.
+       */
       window.addEventListener('keydown', (e) => {
         if (isTypingTarget(e.target) || e.ctrlKey || e.metaKey || e.altKey) return;
 
@@ -245,14 +325,19 @@ const { title, description } = Astro.props;
         }
       });
 
+      /** Release the "Z" combo modifier when its key comes back up. */
       window.addEventListener('keyup', (e) => {
         if (e.key.toLowerCase() === 'z') zHeld = false;
       });
+      /** Reset the "Z" combo modifier if the window loses focus mid-chord. */
       window.addEventListener('blur', () => {
         zHeld = false;
       });
 
-      /* mouse: dock pills and in-page anchors open windows */
+      /**
+       * Mouse: dock pills and in-page anchor links open (or toggle) their target
+       * window instead of performing a native hash navigation.
+       */
       document.querySelectorAll('a[href^="#"]').forEach((link) => {
         link.addEventListener('click', (e) => {
           const id = (link.getAttribute('href') || '').slice(1);
@@ -263,12 +348,15 @@ const { title, description } = Astro.props;
         });
       });
 
-      /* mouse: close via ✕ button or the dimmed backdrop */
+      /** Mouse: close the focused window via the ✕ button or the dimmed backdrop. */
       document.querySelectorAll('[data-window-close]').forEach((el) => {
         el.addEventListener('click', () => showDesktop());
       });
 
-      /* deep links: #about opens that window on load */
+      /**
+       * Deep links: a hash such as #about opens that window on load; otherwise
+       * fall back to the desktop.
+       */
       const initial = location.hash.slice(1);
       if (initial && windows.has(initial)) {
         openWindow(initial, false);
